@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>규칙</title>
+    <style>
+      .title {
+        text-align: center;
+        margin-top: 20px;
+        color: red;
+      }
+
+      .checkbox {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border: 2px solid black;
+        border-radius: 50%;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      .checked {
+        background-color: black;
+      }
+
+      .input-container {
+        margin: 10px 0;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      .endbutton {
+        display: block;
+        margin-left: auto;
+        margin-right: 0;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background: linear-gradient(45deg, #6b73ff, #000dff);
+        border: none;
+        border-radius: 25px;
+        color: white;
+        text-transform: uppercase;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .endbutton:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .endbutton:active {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        transform: translateY(0);
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="module">
+        // Firebase SDK 라이브러리 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+  
+        // Firebase 구성 정보
+        const firebaseConfig = {
+          apiKey: "AIzaSyChoc-QTNTC170E8BcNFzuo1x9B-Dl1DOA",
+          authDomain: "wojewild-b9973.firebaseapp.com",
+          projectId: "wojewild-b9973",
+          storageBucket: "wojewild-b9973.appspot.com",
+          messagingSenderId: "507830599518",
+          appId: "1:507830599518:web:d242a4cda643f06bb199cf",
+          measurementId: "G-HQ8ZJNHP49",
+        };
+  
+        // Firebase 앱 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+  
+        // 문서 추가 함수
+        $(document).ready(function() {
+            $(".checkbox").click(function() {
+                $(this).toggleClass("checked");
+            });
+  
+            $("#CheckPage").click(function() {
+                let openNick = $('#openNick').val();
+                let mcNick = $('#mcNick').val();
+  
+                // Firestore에 데이터 추가
+                addDoc(collection(db, "datas"), {
+                    OpenChattingNickName: openNick,
+                    MinecraftIGN: mcNick,
+                    createdAt: serverTimestamp() // 서버 타임스탬프 필드 추가
+                })
+                .then(() => {
+                    console.log("Document successfully written!");
+                    redirectToCheckPage(); // 저장 성공 시 확인 페이지로 이동
+                })
+                .catch((error) => {
+                    console.error("Error writing document: ", error);
+                    alert("저장 중 오류가 발생했습니다.");
+                });
+            });
+        });
+  
+        // 확인 페이지로 이동하는 함수
+        function redirectToCheckPage() {
+            document.body.classList.add('check-page');
+            document.body.innerHTML = `
+                <div>
+                    <h1>감사합니다!</h1>
+                    <h1>모든 단계를 완료 하셨습니다!</h1>
+                </div>
+            `;
+        }
+      </script>
+  </head>
+
+  <body>
+    <h1 class="title">규칙</h1>
+    <div>
+      <ul>
+        <li>
+          <h2>방장에게 받을 코드/링크는 다른 사람에게 절대 유출하지 않는다.</h2>
+          <h3>
+            <div class="checkbox"></div>
+            규칙을 확인하였고, 규칙을 따를 것입니다.
+          </h3>
+        </li>
+        <li>
+          <h2>이 렐름서버에서 절대 핵(x-ray 등) 사용, 테러를 하지 않는다.</h2>
+          <h3>
+            <div class="checkbox"></div>
+            규칙을 확인하였고, 규칙을 따를 것입니다.
+          </h3>
+        </li>
+      </ul>
+    </div>
+    <hr />
+    <div>
+      <div class="input-container">
+        <input type="text" placeholder="오픈채팅방 닉네임" id="openNick"/>
+      </div>
+      <div class="input-container">
+        <input type="text" placeholder="마인크래프트 닉네임" id="mcNick"/>
+      </div>
+    </div>
+    <button class="endbutton" id="CheckPage">저장</button>
+  </body>
+</html>
